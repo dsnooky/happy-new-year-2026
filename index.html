@@ -11,40 +11,39 @@
 
   body {
     overflow: hidden;
-    background: radial-gradient(circle at bottom, #0f2027, #203a43, #2c5364);
+    background: #f8f8f6; /* Cloud Dancer off-white */
     height: 100vh;
     font-family: 'Luckiest Guy', cursive;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #ffd700;
     text-align: center;
+    color: #333;
   }
 
   h1 {
-    font-size: 6vw; /* responsive text size */
-    text-shadow: 
-      0 0 5px #fff,
-      0 0 10px #ff0,
-      0 0 15px #ff0,
-      0 0 20px #ff0,
-      0 0 30px #ff0;
+    font-size: 8vw;
+    color: #ffffff;
+    text-shadow:
+      0 0 8px #fff,
+      0 0 16px #e6e6e6,
+      0 0 24px #ccc;
     animation: glow 2s infinite alternate;
-    z-index: 2;
     line-height: 1.2;
+    z-index: 2;
   }
 
   @keyframes glow {
-    0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff0, 0 0 15px #ff0, 0 0 20px #ff0; }
-    50% { text-shadow: 0 0 10px #fff, 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0; }
-    100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff0, 0 0 15px #ff0, 0 0 20px #ff0; }
+    0% { text-shadow: 0 0 8px #fff, 0 0 16px #e6e6e6; }
+    50% { text-shadow: 0 0 16px #fff, 0 0 24px #e6e6e6; }
+    100% { text-shadow: 0 0 8px #fff, 0 0 16px #e6e6e6; }
   }
 
   #countdown {
-    font-size: 4vw; /* responsive countdown */
+    font-size: 5vw;
     margin-top: 2vh;
-    text-shadow: 0 0 5px #fff, 0 0 10px #ff0;
+    color: #444;
     z-index: 2;
   }
 
@@ -56,8 +55,8 @@
   }
 
   @media (max-width: 600px) {
-    h1 { font-size: 10vw; }
-    #countdown { font-size: 6vw; }
+    h1 { font-size: 12vw; }
+    #countdown { font-size: 7vw; }
   }
 </style>
 </head>
@@ -88,7 +87,7 @@ function countdown() {
 }
 setInterval(countdown, 1000);
 
-// Fireworks
+// Fireworks with pastel gradients
 const canvas = document.getElementById('fireworks');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -96,7 +95,13 @@ canvas.height = window.innerHeight;
 
 const fireworks = [];
 const particles = [];
-const colors = ['#ff0','#f0f','#0ff','#0f0','#f00','#ffa500','#ff69b4','#00bfff'];
+const colors = [
+  ['#ffffff','#ffe6f2'], // soft white + pink
+  ['#e6f7ff','#ccefff'], // soft blue
+  ['#e6ffe6','#ccffcc'], // mint
+  ['#fff5e6','#ffe0cc'], // warm cream
+  ['#f0e6ff','#d9ccff']  // lavender
+];
 
 class Firework {
   constructor() {
@@ -104,7 +109,7 @@ class Firework {
     this.y = canvas.height;
     this.targetY = Math.random() * canvas.height / 2;
     this.color = colors[Math.floor(Math.random() * colors.length)];
-    this.speed = 3 + Math.random() * 2; // slightly slower for mobile
+    this.speed = 3 + Math.random() * 2;
     this.exploded = false;
   }
   update() {
@@ -117,16 +122,19 @@ class Firework {
     }
   }
   explode() {
-    const count = 30 + Math.random() * 30; // fewer particles for mobile
+    const count = 30 + Math.random() * 30;
     for(let i=0;i<count;i++){
       particles.push(new Particle(this.x, this.y, this.color));
     }
   }
   draw() {
     if(!this.exploded) {
+      const grad = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,3);
+      grad.addColorStop(0, this.color[0]);
+      grad.addColorStop(1, this.color[1]);
       ctx.beginPath();
       ctx.arc(this.x,this.y,2,0,Math.PI*2);
-      ctx.fillStyle = this.color;
+      ctx.fillStyle = grad;
       ctx.fill();
     }
   }
@@ -150,18 +158,21 @@ class Particle {
     this.alpha -= 0.02;
   }
   draw() {
+    const grad = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
+    grad.addColorStop(0, this.color[0]);
+    grad.addColorStop(1, this.color[1]);
     ctx.save();
     ctx.globalAlpha = this.alpha;
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-    ctx.fillStyle = this.color;
+    ctx.fillStyle = grad;
     ctx.fill();
     ctx.restore();
   }
 }
 
 function animate() {
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillStyle = 'rgba(248,248,246,0.4)';
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   if(Math.random() < 0.05) fireworks.push(new Firework());
