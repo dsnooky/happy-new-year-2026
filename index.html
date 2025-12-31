@@ -1,97 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy New Year 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
-class Firework {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height;
-    this.targetY = Math.random() * canvas.height / 2;
-    this.color = colors[Math.floor(Math.random() * colors.length)];
-    this.speed = 3 + Math.random() * 2;
-    this.exploded = false;
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at bottom, #0f2027, #203a43, #2c5364);
+    overflow: hidden;
+    font-family: 'Luckiest Guy', cursive;
   }
-  update() {
-    if(!this.exploded) {
-      this.y -= this.speed;
-      if(this.y <= this.targetY) {
-        this.exploded = true;
-        this.explode();
-      }
-    }
+
+  h1 {
+    font-size: 5em;
+    color: #ffd700;
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0;
+    animation: bounce 1s infinite alternate, glow 2s infinite alternate;
+    z-index: 2;
   }
-  explode() {
-    const count = 30 + Math.random() * 40;
-    for(let i=0;i<count;i++){
-      particles.push(new Particle(this.x, this.y, this.color));
-    }
+
+  @keyframes bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+    100% { transform: translateY(0); }
   }
-  draw() {
-    const grad = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,3);
-    grad.addColorStop(0, this.color[0]);
-    grad.addColorStop(1, this.color[1]);
-    ctx.beginPath();
-    ctx.arc(this.x,this.y,2,0,Math.PI*2);
-    ctx.fillStyle = grad;
-    ctx.fill();
+
+  @keyframes glow {
+    0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff0, 0 0 20px #ff0; }
+    50% { text-shadow: 0 0 20px #fff, 0 0 30px #ff0, 0 0 40px #ff0; }
+    100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff0, 0 0 20px #ff0; }
   }
-}
 
-class Particle {
-  constructor(x, y, color) {
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.speedX = (Math.random() - 0.5) * 5;
-    this.speedY = (Math.random() - 0.5) * 5;
-    this.alpha = 1;
-    this.size = 1 + Math.random() * 3;
-    this.gravity = 0.03;
+  .firework {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #ff0;
+    border-radius: 50%;
+    animation: explode 1s linear infinite;
   }
-  update() {
-    this.speedY += this.gravity;
-    this.x += this.speedX;
-    this.y += this.speedY;
-    this.alpha -= 0.02;
+
+  @keyframes explode {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(calc(var(--x) * 1px), calc(var(--y) * 1px)) scale(0); opacity: 0; }
   }
-  draw() {
-    const grad = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
-    grad.addColorStop(0, this.color[0]);
-    grad.addColorStop(1, this.color[1]);
-    ctx.save();
-    ctx.globalAlpha = this.alpha;
-    ctx.beginPath();
-    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-    ctx.fillStyle = grad;
-    ctx.fill();
-    ctx.restore();
+</style>
+</head>
+<body>
+
+<h1>🎉 Happy New Year 2026! 🎉</h1>
+
+<script>
+  // Generate fireworks
+  const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00'];
+  function createFirework() {
+    const firework = document.createElement('div');
+    firework.className = 'firework';
+    firework.style.left = Math.random() * window.innerWidth + 'px';
+    firework.style.top = Math.random() * window.innerHeight + 'px';
+    firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+    firework.style.setProperty('--x', (Math.random() - 0.5) * 200);
+    firework.style.setProperty('--y', (Math.random() - 0.5) * 200);
+    document.body.appendChild(firework);
+    setTimeout(() => firework.remove(), 1000);
   }
-}
 
-function animate() {
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  if(Math.random() < 0.07) fireworks.push(new Firework());
-
-  fireworks.forEach((f,i)=> {
-    f.update();
-    f.draw();
-    if(f.exploded) fireworks.splice(i,1);
-  });
-
-  particles.forEach((p,i)=>{
-    p.update();
-    p.draw();
-    if(p.alpha <= 0) particles.splice(i,1);
-  });
-
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-window.addEventListener('resize', ()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+  setInterval(createFirework, 200);
 </script>
 
 </body>
