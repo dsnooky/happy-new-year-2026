@@ -19,32 +19,32 @@
     justify-content: center;
     align-items: center;
     color: #ffd700;
+    text-align: center;
   }
 
   h1 {
-    font-size: 6em;
-    text-align: center;
+    font-size: 6vw; /* responsive text size */
     text-shadow: 
-      0 0 10px #fff,
+      0 0 5px #fff,
+      0 0 10px #ff0,
+      0 0 15px #ff0,
       0 0 20px #ff0,
-      0 0 30px #ff0,
-      0 0 40px #ff0,
-      0 0 60px #ff0,
-      0 0 80px #ff0;
+      0 0 30px #ff0;
     animation: glow 2s infinite alternate;
     z-index: 2;
+    line-height: 1.2;
   }
 
   @keyframes glow {
-    0% { text-shadow: 0 0 10px #fff, 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0; }
-    50% { text-shadow: 0 0 20px #fff, 0 0 30px #ff0, 0 0 50px #ff0, 0 0 80px #ff0; }
-    100% { text-shadow: 0 0 10px #fff, 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0; }
+    0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff0, 0 0 15px #ff0, 0 0 20px #ff0; }
+    50% { text-shadow: 0 0 10px #fff, 0 0 20px #ff0, 0 0 30px #ff0, 0 0 40px #ff0; }
+    100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff0, 0 0 15px #ff0, 0 0 20px #ff0; }
   }
 
   #countdown {
-    font-size: 3em;
-    margin-top: 20px;
-    text-shadow: 0 0 10px #fff, 0 0 20px #ff0;
+    font-size: 4vw; /* responsive countdown */
+    margin-top: 2vh;
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff0;
     z-index: 2;
   }
 
@@ -53,6 +53,11 @@
     top: 0;
     left: 0;
     z-index: 1;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 10vw; }
+    #countdown { font-size: 6vw; }
   }
 </style>
 </head>
@@ -99,7 +104,7 @@ class Firework {
     this.y = canvas.height;
     this.targetY = Math.random() * canvas.height / 2;
     this.color = colors[Math.floor(Math.random() * colors.length)];
-    this.speed = 3 + Math.random() * 3;
+    this.speed = 3 + Math.random() * 2; // slightly slower for mobile
     this.exploded = false;
   }
   update() {
@@ -112,7 +117,7 @@ class Firework {
     }
   }
   explode() {
-    const count = 50 + Math.random() * 50;
+    const count = 30 + Math.random() * 30; // fewer particles for mobile
     for(let i=0;i<count;i++){
       particles.push(new Particle(this.x, this.y, this.color));
     }
@@ -120,7 +125,7 @@ class Firework {
   draw() {
     if(!this.exploded) {
       ctx.beginPath();
-      ctx.arc(this.x,this.y,3,0,Math.PI*2);
+      ctx.arc(this.x,this.y,2,0,Math.PI*2);
       ctx.fillStyle = this.color;
       ctx.fill();
     }
@@ -132,11 +137,11 @@ class Particle {
     this.x = x;
     this.y = y;
     this.color = color;
-    this.speedX = (Math.random() - 0.5) * 6;
-    this.speedY = (Math.random() - 0.5) * 6;
+    this.speedX = (Math.random() - 0.5) * 4;
+    this.speedY = (Math.random() - 0.5) * 4;
     this.alpha = 1;
-    this.size = 2 + Math.random() * 3;
-    this.gravity = 0.05;
+    this.size = 1 + Math.random() * 2;
+    this.gravity = 0.03;
   }
   update() {
     this.speedY += this.gravity;
